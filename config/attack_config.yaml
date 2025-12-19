@@ -1,0 +1,9 @@
+attack_rates:
+  rfid_replay: 0.05
+  xrf_replay: 0.05
+  seq_reuse: 0.03
+  delayed_xrf: 0.05
+  uid_seq_mismatch: 0.03
+  purity_manipulation: 0.04
+  incomplete_scan: 0.04
+  post_storage_motion: 0.04

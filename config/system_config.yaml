@@ -1,0 +1,17 @@
+project:
+  name: "AssetLifecycle-Security-Q1"
+  version: "0.1"
+
+seqid:
+  validity_minutes: 20
+  start_counter: 1
+
+sanity_checks:
+  purity_min_percent: 99.0
+  scan_duration_min_seconds: 8
+  contact_required: true
+
+logging:
+  db_path: "logs/audit.sqlite"
+  event_log_path: "logs/events.log"
+  decision_log_path: "logs/decisions.log"
