@@ -62,7 +62,8 @@ class AssetLifecycleEnforcementEngine:
         if not tr.accepted:
             return self._reject(uid, tr, reason=tr.reason, details={"gateway_id": gateway_id})
 
-        return self._accept(uid, tr, details={"gateway_id": gateway_id})
+        return self._accept(uid, tr, details={"gateway_id": gateway_id}, ts_utc=t)
+
 
     def handle_seq_request(self, uid: str, ts_utc: Optional[str] = None) -> EnforcementDecision:
         """
@@ -208,19 +209,19 @@ class AssetLifecycleEnforcementEngine:
     # Helpers
     # -------------------------------
 
-    def _accept(self, uid: str, tr: TransitionResult, details: Dict[str, Any]) -> EnforcementDecision:
-        return EnforcementDecision(
-            decision=Decision.ACCEPT,
-            reason=tr.reason,
-            asset_id=uid,
-            prev_state=tr.prev_state,
-            next_state=tr.next_state,
-            event=tr.event,
-            timestamp_utc=self._now_iso(),
-            details=details,
-        )
+    def _accept(self, uid: str, tr: TransitionResult, details: Dict[str, Any], ts_utc: Optional[str] = None) -> EnforcementDecision:
+            return EnforcementDecision(
+                decision=Decision.ACCEPT,
+                reason=tr.reason,
+                asset_id=uid,
+                prev_state=tr.prev_state,
+                next_state=tr.next_state,
+                event=tr.event,
+                timestamp_utc=ts_utc or self._now_iso(),
+                details=details,
+    )
 
-    def _reject(self, uid: str, tr: TransitionResult, reason: str, details: Dict[str, Any]) -> EnforcementDecision:
+    def _reject(self, uid: str, tr: TransitionResult, reason: str, details: Dict[str, Any], ts_utc: Optional[str] = None) -> EnforcementDecision:
         return EnforcementDecision(
             decision=Decision.REJECT,
             reason=reason,
@@ -228,9 +229,10 @@ class AssetLifecycleEnforcementEngine:
             prev_state=tr.prev_state,
             next_state=tr.next_state,
             event=tr.event,
-            timestamp_utc=self._now_iso(),
+            timestamp_utc=ts_utc or self._now_iso(),
             details=details,
-        )
+    )
+
 
     def _reject_simple(self, uid: str, prev_state: AssetState, event: EventType, reason: str, details: Dict[str, Any]) -> EnforcementDecision:
         return EnforcementDecision(
