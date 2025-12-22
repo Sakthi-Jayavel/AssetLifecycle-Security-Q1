@@ -94,7 +94,9 @@ class AssetLifecycleFSM:
                 prev_state=prev,
                 event=event,
                 next_state=prev,
-                reason=f"ILLEGAL_TRANSITION:{prev.value}->{event.value}",
+                allowed = [e.value for (s,e) in _ALLOWED.keys() if s == prev]
+                reason=f"ILLEGAL_EVENT_IN_STATE:{event.value}@{prev.value};ALLOWED={allowed}"
+
             )
 
         nxt = _ALLOWED[key]
@@ -108,6 +110,5 @@ class AssetLifecycleFSM:
         )
 
     @staticmethod
-    def allowed_transitions() -> Dict[Tuple[AssetState, EventType], AssetState]:
-        # returns a copy for safe external use (docs/figures/tests)
-        return dict(_ALLOWED)
+    def allowed_events(self) -> Set[EventType]:
+        return {e for (s, e), _ in _ALLOWED.items() if s == self._state} | _NON_TRANSITION_EVENTS
