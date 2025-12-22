@@ -94,9 +94,7 @@ class AssetLifecycleFSM:
                 prev_state=prev,
                 event=event,
                 next_state=prev,
-                allowed = [e.value for (s,e) in _ALLOWED.keys() if s == prev]
-                reason=f"ILLEGAL_EVENT_IN_STATE:{event.value}@{prev.value};ALLOWED={allowed}"
-
+                reason=f"ILLEGAL_TRANSITION:{prev.value}->{event.value}",
             )
 
         nxt = _ALLOWED[key]
