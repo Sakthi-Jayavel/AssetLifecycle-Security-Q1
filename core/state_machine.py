@@ -106,6 +106,24 @@ class AssetLifecycleFSM:
             next_state=nxt,
             reason="STATE_ADVANCED",
         )
+# core/state_machine.py
+
+class RFIDStateMachine:
+    def __init__(self):
+        self.seen_uids = set()
+
+    def validate(self, uid, reader_id, timestamp, window_id):
+        # Example rules (simple but valid)
+        if uid is None:
+            return False
+
+        # Replay / duplicate control
+        key = (uid, reader_id, window_id)
+        if key in self.seen_uids:
+            return False
+
+        self.seen_uids.add(key)
+        return True
 
     @staticmethod
     def allowed_events(self) -> Set[EventType]:

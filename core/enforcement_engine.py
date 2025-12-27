@@ -27,6 +27,32 @@ class EnforcementDecision:
     timestamp_utc: str
     details: Dict[str, Any]
 
+# core/enforcement_engine.py
+
+class EnforcementEngine:
+    def __init__(self, fsm):
+        self.fsm = fsm
+        self.allowed = 0
+        self.blocked = 0
+
+    def enforce(self, event):
+        """
+        Returns True if event is allowed, False if blocked
+        """
+        is_valid = self.fsm.validate(
+            uid=event.uid,
+            reader_id=event.reader_id,
+            timestamp=event.ts_arrival,
+            window_id=event.window_id
+        )
+
+        if is_valid:
+            self.allowed += 1
+        else:
+            self.blocked += 1
+
+        return is_valid
+
 
 class AssetLifecycleEnforcementEngine:
     """
